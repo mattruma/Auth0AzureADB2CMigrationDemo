@@ -4,23 +4,26 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-public class AccountController : Controller
+namespace Auth0WebApp.Controllers
 {
-    public async Task Login(string returnUrl = "/")
+    public class AccountController : Controller
     {
-        await HttpContext.ChallengeAsync("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl });
-    }
-
-    [Authorize]
-    public async Task Logout()
-    {
-        await HttpContext.SignOutAsync("Auth0", new AuthenticationProperties
+        public async Task Login(string returnUrl = "/")
         {
-            // Indicate here where Auth0 should redirect the user after a logout.
-            // Note that the resulting absolute Uri must be whitelisted in the
-            // **Allowed Logout URLs** settings for the app.
-            RedirectUri = Url.Action("Index", "Home")
-        });
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.ChallengeAsync("Auth0", new AuthenticationProperties() { RedirectUri = returnUrl });
+        }
+
+        [Authorize]
+        public async Task Logout()
+        {
+            await HttpContext.SignOutAsync("Auth0", new AuthenticationProperties
+            {
+                // Indicate here where Auth0 should redirect the user after a logout.
+                // Note that the resulting absolute Uri must be whitelisted in the
+                // **Allowed Logout URLs** settings for the app.
+                RedirectUri = Url.Action("Index", "Home")
+            });
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
     }
 }
